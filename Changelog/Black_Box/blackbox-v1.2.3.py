@@ -29,9 +29,9 @@ take_profit = 0
 BASE_URL = "https://www.okx.com"
 symbol = 'BTC-USDT-SWAP'
 SYMBOL = 'BTC-USDT-SWAP'
-timeframe = '5m'
+timeframe = '1m'
 LEVERAGE = 5
-ORDER_SIZE = 1
+ORDER_SIZE = 10
 limit = 200
 loop_interval = 30  # in seconds
 
@@ -41,8 +41,8 @@ API_KEY = os.getenv("OKX_API_KEY")
 SECRET_KEY = os.getenv("OKX_SECRET_KEY")
 PASSPHRASE = os.getenv("OKX_PASSPHRASE")
 
-STOP_LOSS_PERCENTAGE = 0.02
-TAKE_PROFIT_PERCENTAGE = 0.05
+STOP_LOSS_PERCENTAGE = 0.002
+TAKE_PROFIT_PERCENTAGE = 0.005
 
 # ------------------- API Utility Functions -------------------
 
