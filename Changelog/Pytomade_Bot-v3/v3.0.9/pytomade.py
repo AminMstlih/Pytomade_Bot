@@ -214,7 +214,15 @@ def get_signal(df):
     return signal
 
 # Calculate contracts based on USDT margin cost
-
+def calculate_contracts(price):
+    notional_value = MARGIN_COST_USD * LEVERAGE
+    contracts = int(notional_value / (price * CONTRACT_SIZE))
+    contracts = min(max(contracts, 0.1), MAX_CONTRACTS)
+    actual_notional = contracts * price * CONTRACT_SIZE
+    margin_used = actual_notional / LEVERAGE
+    logger.info(f"Calculated contracts: {contracts} ({contracts * CONTRACT_SIZE} DOGE), "
+                f"price ${price:.4f}, notional ${actual_notional:.2f}, margin used ${margin_used:.2f}")
+    return contracts
 
 # Check for TP/SL closure
 def check_tp_sl_closure():
