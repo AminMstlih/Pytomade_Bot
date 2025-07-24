@@ -20,9 +20,9 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 # OKX API credentials (demo, as provided)
-API_KEY = "8e5453d3-ffd8-4d5c-b1b2-2951a2b28469"
-SECRET_KEY = "A394272EBCBB6737A6101C22AF396C93"
-PASSPHRASE = "Mu$tolih2001"
+API_KEY = ""
+SECRET_KEY = ""
+PASSPHRASE = ""
 BASE_URL = "https://www.okx.com"
 
 # Trading parameters
