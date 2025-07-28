@@ -1,3 +1,5 @@
+#this one works well but still have issue on close all position when bot stopped
+
 import time
 import hmac
 import base64
