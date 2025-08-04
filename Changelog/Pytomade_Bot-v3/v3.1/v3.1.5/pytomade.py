@@ -38,9 +38,9 @@ MAX_POSITION_SIZE = 10000  # Max position size in USDT
 TP_PNL = 0.07  # +7% PNL
 SL_PNL = -0.05  # -5% PNL
 USE_PNL_BASED = True
-MAX_DAILY_LOSS = -2  # Max daily loss in USD
+MAX_DAILY_LOSS = -1  # Max daily loss in USD
 USE_TRAILING_STOP = True
-TRAILING_STOP_ACTIVATION = 0.05  # Activate at 5% profit
+TRAILING_STOP_ACTIVATION = 0.02  # Activate at 5% profit
 TRAILING_STOP_DISTANCE = 0.05  # 5% trailing distance
 
 # Volume & Volatility Filters
@@ -275,7 +275,7 @@ def calculate_indicators(df):
 
     df["ma13"] = sma(df["close"], 13)
     df["ma21"] = sma(df["close"], 21)
-    df["volume_sma"] = sma(df["volume"], 10)
+    df["volume_sma"] = sma(df["volume"], 5)
     df["stochrsi_k"], df["stochrsi_d"] = stochrsi(df["close"], rsi_length=5, stoch_length=5, k=3, d=3)
     df["atr"] = atr(df["high"], df["low"], df["close"], period=14)
     df["adx"] = adx(df["high"], df["low"], df["close"], period=14)
@@ -304,9 +304,9 @@ def get_signal(df):
     adx_strong = latest["adx"] > ADX_THRESHOLD
 
     signal = None
-    if ma_long and stochrsi_long and volume_trend and adx_strong:
+    if ma_long and stochrsi_long and volume_trend and latest["stochrsi_k"] < 85 and adx_strong:
         signal = "long"
-    elif ma_short and stochrsi_short and volume_trend and adx_strong:
+    elif ma_short and stochrsi_short and volume_trend and latest["stochrsi_k"] > 15 and adx_strong:
         signal = "short"
 
     logger.info(f"Signal check: MA_Long={ma_long}, MA_Short={ma_short}, "
@@ -332,8 +332,8 @@ def calculate_tp_sl(price, volatility, side):
         volatility = 0.01  # Fallback volatility
         logger.warning(f"Using default volatility: {volatility}")
     if USE_PNL_BASED:
-        tp_distance = min(TP_PNL, volatility * atr_multiple)
-        sl_distance = min(abs(SL_PNL), volatility * atr_multiple)
+        tp_distance = TP_PNL / LEVERAGE
+        sl_distance = abs(SL_PNL) / LEVERAGE
     else:
         tp_distance = volatility * atr_multiple
         sl_distance = volatility * atr_multiple
