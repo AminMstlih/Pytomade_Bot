@@ -35,8 +35,8 @@ MAX_CONTRACTS = 10  # Hard cap on contracts per position
 MAX_POSITION_SIZE = 10000  # Max position size in USDT
 
 # Risk Management Parameters
-TP_PNL = 0.07  # +7% PNL
-SL_PNL = -0.05  # -5% PNL
+TP_PNL = 0.15  # +7% PNL
+SL_PNL = -0.07  # -5% PNL
 USE_PNL_BASED = True
 MAX_DAILY_LOSS = -1  # Max daily loss in USD
 USE_TRAILING_STOP = True
@@ -345,8 +345,8 @@ def calculate_tp_sl(price, volatility, side):
         tp_price = price * (1 - tp_distance)
         sl_price = price * (1 + sl_distance)
 
-    tp_price = round(tp_price, 8)
-    sl_price = round(sl_price, 8)
+    tp_price = round(tp_price, 5)
+    sl_price = round(sl_price, 5)
     return tp_price, sl_price
 
 # Place order with isolated margin for hedging
