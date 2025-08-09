@@ -1,4 +1,4 @@
-#The code works fine, I think
+#The code works fine
 
 import os
 import time
@@ -29,22 +29,22 @@ PASSPHRASE = os.getenv("OKX_PASSPHRASE")
 BASE_URL = "https://www.okx.com"
 
 # Trading parameters
-INSTRUMENT = "DOGE-USDT-SWAP"
-LEVERAGE = 15
-MARGIN_COST_USD = 2  # Fixed margin cost in USDT per position for hedging
-CONTRACT_SIZE = 1000  # 1 contract = 10 DOGE for DOGE-USDT-SWAP
-MAX_CONTRACTS = 10  # Hard cap on contracts per position
+INSTRUMENT = "KAITO-USDT-SWAP"
+LEVERAGE = 21
+MARGIN_COST_USD = 1.5  # Fixed margin cost in USDT per position for hedging
+CONTRACT_SIZE = 1  # 1 contract = amount in token
+MAX_CONTRACTS = 100  # Hard cap on contracts per position
 MAX_POSITION_SIZE = 10000  # Max position size in USDT
 
 # Risk Management Parameters
-TP1_PNL = 0.07  # +7% PNL for TP1
-TP2_PNL = 0.15  # +15% PNL for TP2
-TP1_SIZE_RATIO = 0.71  # 71% of position for TP1
-SL_PNL = -0.07  # -7% PNL for SL
+TP1_PNL = 0.05  # +5% PNL for TP1
+TP2_PNL = 0.07  # +7% PNL for TP2
+TP1_SIZE_RATIO = 0.51  # 71% of position for TP1
+SL_PNL = -0.05  # -7% PNL for SL
 USE_PNL_BASED = True
-MAX_DAILY_LOSS = -1  # Max daily loss in USD
+MAX_DAILY_LOSS = -2  # Max daily loss in USD
 USE_TRAILING_STOP = True
-TRAILING_STOP_ACTIVATION = 0.05  # Activate at 5% profit
+TRAILING_STOP_ACTIVATION = 0.02  # Activate at 2% profit
 TRAILING_STOP_DISTANCE = 0.05  # 5% trailing distance
 
 # Volume & Volatility Filters
@@ -56,8 +56,8 @@ SIGNAL_COOLDOWN = 60  # seconds
 RESET_SIGNAL_AFTER = 300  # Reset last_signal
 MIN_MA_DIFF = 0.0001  # 0.01% min MA difference
 STOCH_THRESHOLD = 0.005  # 0.5% min StochRSI difference
-ADX_THRESHOLD = 15  # Min ADX for trend confirmation
-VOLUME_THRESHOLD = 0.7  # Minimum volume relative to SMA
+ADX_THRESHOLD = 7  # Min ADX for trend confirmation
+VOLUME_THRESHOLD = 0.2  # Minimum volume relative to SMA
 API_RATE_LIMIT_DELAY = 0.1  # Delay per API request
 
 # Global state
@@ -322,7 +322,7 @@ def calculate_contracts(price):
     notional_value = MARGIN_COST_USD * LEVERAGE
     contracts = notional_value / (price * CONTRACT_SIZE)
     contracts = min(max(contracts, 0.001), MAX_CONTRACTS)
-    contracts_rounded = max(round(contracts, 3), 0.001)
+    contracts_rounded = max(round(contracts, 0), 0.001)
     actual_notional = contracts_rounded * price * CONTRACT_SIZE
     margin_used = actual_notional / LEVERAGE
     logger.info(f"Calculated contracts: {contracts_rounded:.3f} contracts, notional ${actual_notional:.2f}, margin used ${margin_used:.2f}")
@@ -377,9 +377,9 @@ def place_order(side, contracts, entry_price):
     sl_price = round(sl_price, 5)
 
     # Calculate sizes for TP1 and TP2
-    tp1_size = round(TP1_SIZE_RATIO * contracts, 2)
-    tp2_size = round((1 - TP1_SIZE_RATIO) * contracts, 2)
-    sl_size = round(contracts, 2)
+    tp1_size = round(TP1_SIZE_RATIO * contracts, 0)
+    tp2_size = round((1 - TP1_SIZE_RATIO) * contracts, 0)
+    sl_size = round(contracts, 5)
 
     # Define close side for algo orders
     close_side = "sell" if side == "long" else "buy"
@@ -425,7 +425,7 @@ def place_order(side, contracts, entry_price):
         "side": "buy" if side == "long" else "sell",
         "posSide": side,
         "ordType": "market",
-        "sz": str(round(contracts, 2)),
+        "sz": str(round(contracts, 0)),
         "lever": str(LEVERAGE),
         "attachAlgoOrds": attach_algo_ords
     }
