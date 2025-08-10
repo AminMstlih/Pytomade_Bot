@@ -1,5 +1,3 @@
-#works fine actually but, the ahhh sizing is a lil bit innacurate still
-
 import os
 import time
 import hmac
@@ -32,8 +30,8 @@ BASE_URL = "https://www.okx.com"
 
 # Trading parameters
 INSTRUMENT = "KAITO-USDT-SWAP"
-LEVERAGE = 21
-POSITION_SIZE_USDT = 10  # Position size in USDT
+LEVERAGE = 15
+POSITION_SIZE_USDT = 15  # Position size in USDT
 MAX_POSITION_SIZE = 10000  # Max position size in USDT
 # Risk Management Parameters
 TP1_PNL = 0.05  # +5% PNL for TP1
